@@ -1,13 +1,14 @@
-const { app, BrowserWindow, nativeImage, ipcMain } = require('electron')
+const { app, BrowserWindow, nativeImage, Tray, Menu, ipcMain } = require('electron')
 
 const image = nativeImage.createFromPath(__dirname + '/icon.png');
 
 image.setTemplateImage(true)
 
 let hiddenWindow = null;
+let win = null;
 
 function createWindow () {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1000,
     height: 600,
     webPreferences: {
@@ -39,6 +40,18 @@ function createWindow () {
 
   });
 
+  // minimize to tray
+  win.on('minimize',function(event){
+    event.preventDefault();
+    win.hide();
+  });
+
+  // proper quit
+  win.on('close',function(event){
+    app.isQuiting = true;
+    app.quit();
+  });
+
 }
 
 function createHiddenWindow () {
@@ -58,9 +71,41 @@ function createHiddenWindow () {
 
 }
 
+function createTrayIcon() {
+  appIcon = new Tray('./icon.png');
+  var contextMenu = Menu.buildFromTemplate([
+    { 
+      label: 'Show', 
+      click:  function(){
+        win.show();
+      } 
+    },
+    { 
+      label: 'Quit', 
+      click:  function(){
+        app.isQuiting = true;
+        app.quit();
+      } 
+    }
+  ]);
+  appIcon.setToolTip('Chess.com');
+  appIcon.setContextMenu(contextMenu);
+
+  appIcon.on('click', function(e){
+    if (win.isVisible()) {
+      win.hide()
+    } else {
+      win.show()
+    }
+  });
+
+}
+
 app.whenReady().then((d) => {
 
   createWindow(d)
+
+  createTrayIcon();
 
   createHiddenWindow(d)
 

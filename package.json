@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win --64",
+    "dist": "electron-builder --win",
     "start": "electron ."
   },
   "author": "JairusSW",
