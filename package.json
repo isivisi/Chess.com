@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win --64"
+    "dist": "electron-builder --win --64",
+    "start": "electron ."
   },
   "author": "JairusSW",
   "license": "MIT",
@@ -21,6 +22,7 @@
     "icon": "icon.png"
   },
   "dependencies": {
+    "chess-web-api": "^1.1.0",
     "discord-rich-presence": "0.0.8"
   }
 }
