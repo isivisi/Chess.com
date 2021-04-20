@@ -49,7 +49,7 @@ function createWindow () {
 
 function createHiddenWindow () {
   hiddenWindow = new BrowserWindow({
-    show: true,
+    show: false,
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
