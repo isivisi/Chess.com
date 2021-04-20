@@ -72,7 +72,7 @@ function createHiddenWindow () {
 }
 
 function createTrayIcon() {
-  appIcon = new Tray('./icon.png');
+  appIcon = new Tray(image);
   var contextMenu = Menu.buildFromTemplate([
     { 
       label: 'Show', 
