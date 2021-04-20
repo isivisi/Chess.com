@@ -26,21 +26,15 @@ function createWindow () {
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
     win.loadURL(url);
-    console.log(new URL(url))
-    // Let our hidden window know that we've changed pages
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   });
 
   win.webContents.on('did-navigate-in-page', function (event, url) {
-    console.log(new URL(url))
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   })
 
   win.webContents.on('did-navigate', async (event, url, httpResponseCode, httpStatusCode) => {
 
-    console.log(new URL(url))
-
-    // Let our hidden window know that we've changed pages
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
 
   });

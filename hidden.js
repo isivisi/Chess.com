@@ -4,13 +4,6 @@ const Discord = require('discord-rpc');
 const EventEmitter = require('events');
 const { ipcRenderer } = require('electron');
 
-const ChessWebAPI = require('chess-web-api');
-var chessAPI = new ChessWebAPI({
-  queue: true,
-});
-// TODO: 
-// use GetGameById to get current game details if available from the url
-
 function makeClient(clientId) {
   const rpc = new Discord.Client({ transport: 'ipc' });
 
@@ -85,15 +78,7 @@ ipcRenderer.on('navigated', (event, url) => {
 
   // We can parse the url to determine the current users state for discord
   if (url.pathname == "/play") client.updatePresence({state: 'Playing Chess', details: 'Playing Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
-  else if (url.pathname == "/live") {
-    // get live chess details
-    /*if (url.hash) {
-      chessAPI.getGameByID(url.hash.replace('#g=', '')).then(details => {
-        console.log(details)
-      });
-    }*/
-    client.updatePresence({state: 'Watching Live Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
-  }
+  else if (url.pathname == "/live") client.updatePresence({state: 'Watching Live Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/play/online") client.updatePresence({state: 'Playing Online Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/play/computer") {client.updatePresence({state: 'Playing AI Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})}
 
