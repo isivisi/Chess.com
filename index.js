@@ -1,4 +1,6 @@
 const { app, BrowserWindow, nativeImage, Tray, Menu, ipcMain } = require('electron')
+const path = require('path');
+const ElectronPreferences = require('electron-preferences');
 
 const image = nativeImage.createFromPath(__dirname + '/icon.png');
 
@@ -9,6 +11,7 @@ let win = null;
 
 function createWindow () {
   win = new BrowserWindow({
+    show: !process.argv.includes('--hidden'),
     width: 1000,
     height: 600,
     webPreferences: {
@@ -81,6 +84,12 @@ function createTrayIcon() {
       } 
     },
     { 
+      label: 'Settings', 
+      click:  function(){
+        preferences.show();
+      } 
+    },
+    { 
       label: 'Quit', 
       click:  function(){
         app.isQuiting = true;
@@ -122,3 +131,85 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+const preferences = new ElectronPreferences({
+  'dataStore': path.resolve(app.getPath('userData'), 'preferences.json'),
+  'defaults': {
+    'startup': {
+        'startup_with_os': false,
+        'startup_hidden': true,
+    },
+    'discord': {
+        'status_on': [
+          'live',
+          'playing',
+          'puzzles',
+          'lessons'
+        ]
+    },
+  },
+  'sections':[
+      {
+        'id': 'startup',
+        'label': 'Startup Settings',
+        'form': {
+            'groups': [
+                {
+                    'label': 'Startup Settings',
+                    'fields': [
+                        {
+                            'label': 'Startup with',
+                            'key': 'startup_with_os',
+                            'type': 'checkbox',
+                            'help': 'Automatically start the program when your computer starts up.'
+                        },
+                        {
+                          'label': 'Startup hidden',
+                          'key': 'startup_hidden',
+                          'type': 'checkbox',
+                          'help': 'whether  to start hidden away in the tray or not.'
+                      },
+                    ]
+                }
+            ]      
+        }
+      },
+    {
+      'id': 'discord',
+      'label': 'Discord Settings',
+      'form': {
+          'groups': [
+              {
+                  'label': 'Discord Settings',
+                  'fields': [
+                      {
+                          'label': "When to show chess.com status",
+                          'key': 'status_on',
+                          'type': 'checkbox',
+                          'options': [
+                              {'label': 'Watching Live', 'value': 'live'},
+                              {'label': 'Playing Chess', 'value': 'playing'},
+                              {'label': 'Solving Puzzles', 'value': 'puzzles'},
+                              {'label': 'Watching Lessons', 'value': 'lessons'},
+                          ],
+                          'help': 'What to publicly show you are doing on chess.com'
+                      }
+                  ]
+              } 
+          ]
+      }
+    }
+  ]
+});
+
+preferences.on('save', (preferences) => {
+  setStartupState(preferences.startup.startup_with_os, preferences.startup.startup_hidden)
+  hiddenWindow.webContents.send('preferences', preferences)
+});
+
+function setStartupState(open, isHidden) {
+  app.setLoginItemSettings({
+    openAtLogin: state,
+    args: isHidden ? ['--hidden'] : [],
+  })
+}

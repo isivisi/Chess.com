@@ -11,7 +11,7 @@
   "author": "JairusSW",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^11.0.1",
+    "electron": "^11.4.3",
     "electron-builder": "^22.9.1"
   },
   "build": {
@@ -22,6 +22,8 @@
     "icon": "icon.png"
   },
   "dependencies": {
-    "discord-rich-presence": "0.0.8"
+    "discord-rich-presence": "0.0.8",
+    "electron-preferences": "^2.2.0",
+    "path": "^0.12.7"
   }
 }
