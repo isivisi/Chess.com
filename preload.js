@@ -3,6 +3,7 @@
 const { ipcRenderer } = require('electron');
 
 const html2canvas = require('html2canvas');
+const domtoimage = require('dom-to-image');
 
 console.log('Chess.com desktop script injected successfuly')
 
@@ -16,14 +17,19 @@ var head = null;
 
 function watchBoard(toWatch) {
     var mutationObserver = new MutationObserver((mutation) => {
-        //if (mutation[0].target.getAttribute("style") != "") return; // moving
+        if (mutation[0].target.getAttribute("style") != "") return; // moving
         if (mutation[0].target.closest('.dragging')) return; // moving
-        var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main');
+        var board = mutation[0].target.closest('chess-board') || mutation[0].target.closest('#board-layout-main');
         if (!board) return;
 
-        html2canvas(board).then(canvas => {
+        /*html2canvas(board).then(canvas => {
             console.log(canvas.toDataURL());
             ipcRenderer.send('board-change', canvas.toDataURL());
+        });*/
+
+        domtoimage.toPng(board).then(function (dataUrl) {
+            console.log(dataUrl);
+            ipcRenderer.send('board-change', dataUrl);
         });
 
     });
