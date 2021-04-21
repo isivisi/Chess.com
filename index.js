@@ -295,7 +295,7 @@ ipcMain.on('board-change', (event, html) => {
     win.show();
   });
 
-  popup.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+  popup.loadURL(html);
 
   popup.webContents.on('did-finish-load', ()=>{
     popup.webContents.executeJavaScript('document.body.style = "border-radius: 25px; margin: 25px; overflow:hidden;"');

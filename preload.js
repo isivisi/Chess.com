@@ -2,6 +2,8 @@
 
 const { ipcRenderer } = require('electron');
 
+const html2canvas = require('html2canvas');
+
 console.log('Chess.com desktop script injected successfuly')
 
 // Gather all chess boards in current view so we can determine someone has made a move
@@ -18,9 +20,11 @@ function watchBoard(toWatch) {
         if (mutation[0].target.closest('.dragging')) return; // moving
         var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main');
         if (!board) return;
-        // send out html of move so we can make alert
-        console.log(head + board.outerHTML);
-        ipcRenderer.send('board-change', head + board.outerHTML);
+
+        html2canvas(board).then(canvas => {
+            console.log(canvas.toDataURL());
+            ipcRenderer.send('board-change', canvas.toDataURL());
+        });
 
     });
     mutationObserver.observe(toWatch, {
@@ -35,36 +39,6 @@ function watchBoard(toWatch) {
 }
 
 document.addEventListener('DOMContentLoaded', ()=> {
-
-    //https://stackoverflow.com/questions/1679507/getting-all-css-used-in-html-file/31460383
-    var css = [];
-    var hrefs = [];
-    for (var i=0; i<document.styleSheets.length; i++)
-    {
-        hrefs.push(document.styleSheets[i].href);
-        var sheet = document.styleSheets[i];
-        var rules = ('cssRules' in sheet)? sheet.cssRules : sheet.rules;
-        if (rules)
-        {
-            css.push('\n/* Stylesheet : '+(sheet.href||'[inline styles]')+' */');
-            for (var j=0; j<rules.length; j++)
-            {
-                var rule = rules[j];
-                if ('cssText' in rule)
-                    css.push(rule.cssText);
-                else
-                    css.push(rule.selectorText+' {\n'+rule.style.cssText+'\n}\n');
-            }
-        }
-    }
-    cssInline = '<style>' + (css.join('\n')) + '</style>'
-
-    var links = document.getElementsByTagName('link');
-    head = '<head>';
-    for (var i = 0; i < links.length; i++) {
-        head += links[i].outerHTML;
-    }
-    head += '</head>'
 
     var boards = document.getElementsByTagName("chess-board");
     for (var i = 0; i < boards.length; i++) watchBoard(boards[i])
