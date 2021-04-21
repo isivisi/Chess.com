@@ -87,7 +87,7 @@ ipcRenderer.on('navigated', (event, url) => {
   else if (url.pathname == "/play/online") client.updatePresence({state: 'Playing Online Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/play/computer") {client.updatePresence({state: 'Playing AI Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})}
 
-  else if (url.pathname == "/puzzles") client.updatePresence({state: 'Standard Puzzles', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
+  else if (url.pathname == "/puzzles/rated") client.updatePresence({state: 'Rated Puzzles', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/puzzles/rush") client.updatePresence({state: 'Puzzle Rush', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/puzzles/battle") client.updatePresence({state: 'Puzzle Battle', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true}) 
   else if (url.pathname == "/solo-chess") client.updatePresence({state: 'Solo Chess', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
