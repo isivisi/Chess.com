@@ -72,13 +72,18 @@ function makeClient(clientId) {
 
 const client = makeClient('778330525889724476')
 
+let preferences = null;
+ipcRenderer.on('preferences', (event, preferences) => {
+  preferences = preferences;
+});
+
 // When chess.com has navigated
 ipcRenderer.on('navigated', (event, url) => {
   url = new URL(url);
 
   // We can parse the url to determine the current users state for discord
-  if (url.pathname == "/play") client.updatePresence({state: 'Playing Chess', details: 'Playing Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
-  else if (url.pathname == "/live") client.updatePresence({state: 'Watching Live Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
+  if (url.pathname == "/live") client.updatePresence({state: 'Watching Live Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
+  else if (url.pathname == "/play") client.updatePresence({state: 'Playing Chess', details: 'Playing Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/play/online") client.updatePresence({state: 'Playing Online Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == "/play/computer") {client.updatePresence({state: 'Playing AI Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})}
 

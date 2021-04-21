@@ -67,10 +67,13 @@ function createHiddenWindow () {
     },
     icon: image
   })
-
   //hiddenWindow.setMenu(null)
 
   hiddenWindow.loadFile('./hidden.html')
+
+  hiddenWindow.webContents.on('did-finish-load', ()=>{
+    hiddenWindow.webContents.send('preferences', preferences.preferences)
+  })
 
 }
 
@@ -157,19 +160,17 @@ const preferences = new ElectronPreferences({
                 {
                     'label': 'Startup Settings',
                     'fields': [
-                        {
-                            'label': 'Startup with',
-                            'key': 'startup_with_os',
-                            'type': 'checkbox',
-                            'help': 'Automatically start the program when your computer starts up.'
-                        },
-                        {
-                          'label': 'Startup hidden',
-                          'key': 'startup_hidden',
-                          'type': 'checkbox',
-                          'help': 'whether  to start hidden away in the tray or not.'
-                      },
-                    ]
+                      {
+                          'label': "On OS Startup",
+                          'key': 'startup_type',
+                          'type': 'radio',
+                          'options': [
+                            {'label': "Don't start automatically", 'value': false},
+                            {'label': 'Start automatically', 'value': true},
+                          ],
+                          'help': 'What to publicly show you are doing on chess.com'
+                      }
+                  ]
                 }
             ]      
         }
@@ -203,13 +204,13 @@ const preferences = new ElectronPreferences({
 });
 
 preferences.on('save', (preferences) => {
-  setStartupState(preferences.startup.startup_with_os, preferences.startup.startup_hidden)
+  setStartupState(preferences.startup.startup_type)
   hiddenWindow.webContents.send('preferences', preferences)
 });
 
-function setStartupState(open, isHidden) {
+function setStartupState(open) {
   app.setLoginItemSettings({
-    openAtLogin: state,
-    args: isHidden ? ['--hidden'] : [],
+    openAtLogin: open,
+    args: ['--hidden'],
   })
 }
