@@ -8,6 +8,7 @@ image.setTemplateImage(true)
 
 let hiddenWindow = null;
 let win = null;
+let lastSendUrl = "/";
 
 function createWindow () {
   win = new BrowserWindow({
@@ -30,15 +31,17 @@ function createWindow () {
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
     win.loadURL(url);
+    lastSendUrl = url;
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   });
 
   win.webContents.on('did-navigate-in-page', function (event, url) {
+    lastSendUrl = url;
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   })
 
   win.webContents.on('did-navigate', async (event, url, httpResponseCode, httpStatusCode) => {
-
+    lastSendUrl = url;
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
 
   });
@@ -47,7 +50,14 @@ function createWindow () {
   win.on('minimize',function(event){
     event.preventDefault();
     win.hide();
+    win.webContents.setAudioMuted(true);
+    hiddenWindow.webContents.send('navigated', "https://chess.com/")
   });
+
+  win.on('show', () => {
+    win.webContents.setAudioMuted(false);
+    hiddenWindow.webContents.send('navigated', lastSendUrl)
+  })
 
   // proper quit
   win.on('close',function(event){

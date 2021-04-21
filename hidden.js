@@ -93,7 +93,7 @@ ipcRenderer.on('navigated', (event, url) => {
   else if (url.pathname == "/solo-chess") client.updatePresence({state: 'Solo Chess', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname.includes("/drills/practice")) client.updatePresence({state: 'Chess Drills', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
 
-  else if (url.pathname.includes("/lessons")) client.updatePresence({state: 'Learning Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
+  else if (url.pathname.includes("/lessons/")) client.updatePresence({state: 'Learning Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == '/analysis') client.updatePresence({state: 'Analyzing Chess Match', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == '/vision') client.updatePresence({state: 'Playing Vision Minigame', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   else if (url.pathname == '/explorer') client.updatePresence({state: 'Exploring Chess Positions', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
