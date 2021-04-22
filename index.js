@@ -149,6 +149,7 @@ const preferences = new ElectronPreferences({
     'notifications': {
       'show_chessboard_on': [],
       'show_chessboard_time': 10,
+      'show_chessboard_size': 300,
     }
   },
   'sections':[
@@ -226,7 +227,15 @@ const preferences = new ElectronPreferences({
                         'min': 1,
                         'max': 30,
                         'help': 'How long a boardstate notifcation stays on the screen in seconds'
-                    }
+                      },
+                      {
+                        'label': "Notification size (pixels)",
+                        'key': 'show_chessboard_size',
+                        'type': 'slider',
+                        'min': 150,
+                        'max': 1200,
+                        'help': 'How big the boardstate notification is in pixels'
+                      }
                   ]
               } 
           ]
@@ -260,6 +269,9 @@ app.on('activate', () => {
 preferences.on('save', (preferences) => {
   setStartupState(preferences.startup.startup_type)
   hiddenWindow.webContents.send('preferences', preferences)
+
+  if (popup) popup.close(); // reset popup size
+
 });
 
 function setStartupState(open) {
@@ -283,13 +295,14 @@ ipcMain.on('board-change', (event, html) => {
     let display = screen.getPrimaryDisplay();
     let width = display.bounds.width;
     let height = display.bounds.height;
+    let popupSize = preferences.preferences.notifications.show_chessboard_size;
     popup = new BrowserWindow({
       frame: false,
       show: false,
-      width: 600,
-      height: 600,
-      x: width - 600,
-      y: height - 600,
+      width: popupSize,
+      height: popupSize,
+      x: width - (popupSize + 15),
+      y: height - (popupSize + 50),
       webPreferences: {
         nodeIntegration: true,
         webSecurity: false,
@@ -303,7 +316,7 @@ ipcMain.on('board-change', (event, html) => {
     //popup.setResizable(false)
   } else popup.showInactive();
 
-  popup.on('close',function(event){
+  popup.once('close',function(event){
     popup = null;
   });
   
@@ -317,9 +330,5 @@ ipcMain.on('board-change', (event, html) => {
   popupTimeout = setTimeout(() => {
     popup.hide();
   }, preferences.preferences.notifications.show_chessboard_time * 1000);
-
-  popup.webContents.on('did-finish-load', ()=>{
-    popup.webContents.executeJavaScript('document.body.style = "background-color:rgb(49, 46, 43)"');
-  });
   
 });
