@@ -1,8 +1,10 @@
 // preload for chess.com
 
 const { ipcRenderer } = require('electron');
-
 const domtoimage = require('dom-to-image');
+
+// force focus even when not for better notifications when minimized
+document.__defineGetter__("visibilityState",  function() { return "true";})
 
 console.log('Chess.com desktop script injected successfuly')
 
