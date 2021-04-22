@@ -21,9 +21,8 @@ function watchBoard(toWatch, ignoreStyle=false) {
         if (mutation[0].target.closest('.dragging')) return; // moving
         var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
         if (!board) return;
-        
+
         domtoimage.toPng(board).then(function (dataUrl) {
-            console.log(dataUrl);
             ipcRenderer.send('board-change', dataUrl);
         });
 
@@ -36,6 +35,7 @@ function watchBoard(toWatch, ignoreStyle=false) {
         attributeOldValue: true,
         characterDataOldValue: true
     });
+    mutationObserver.setMaxListeners(50);
     mutationObservers.push(mutationObserver);
 }
 

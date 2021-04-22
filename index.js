@@ -271,7 +271,7 @@ ipcMain.on('board-change', (event, html) => {
     let height = display.bounds.height;
     popup = new BrowserWindow({
       frame: false,
-      show: true,
+      show: false,
       width: 600,
       height: 600,
       x: width - 600,
@@ -283,6 +283,7 @@ ipcMain.on('board-change', (event, html) => {
       },
       icon: image
     })
+    popup.loadFile('./boardNotification.html')
     popup.setAlwaysOnTop(true, "screen-saver", 1);
     //popup.setResizable(false)
   } else popup.showInactive();
@@ -296,14 +297,14 @@ ipcMain.on('board-change', (event, html) => {
     win.show();
   });
 
-  popup.loadURL(html);
+  popup.webContents.send('board-update', html);
 
   popupTimeout = setTimeout(() => {
     popup.hide();
   }, 5000);
 
   popup.webContents.on('did-finish-load', ()=>{
-    popup.webContents.executeJavaScript('document.body.style = "background-color:black"');
+    popup.webContents.executeJavaScript('document.body.style = "background-color:rgb(49, 46, 43)"');
   });
   
 });
