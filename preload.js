@@ -21,21 +21,20 @@ function watchBoard(toWatch, ignoreStyle=false) {
         domtoimage.toPng(board).then(function (dataUrl) {
             ipcRenderer.send('board-change', dataUrl);
         });
-
     });
     mutationObserver.observe(toWatch, {
-        attributes: true,
-        characterData: true,
+        /*attributes: true,
+        characterData: true,*/
         childList: true,
         subtree: true,
-        attributeOldValue: true,
-        characterDataOldValue: true
+        /*attributeOldValue: true,
+        characterDataOldValue: true*/
     });
-    mutationObserver.setMaxListeners(50);
     mutationObservers.push(mutationObserver);
 }
 
-document.addEventListener('DOMContentLoaded', ()=> {
+function enableBoardObservers() {
+    console.log('observing board changes');
 
     var boards = document.getElementsByTagName("chess-board");
     for (var i = 0; i < boards.length; i++) watchBoard(boards[i])
@@ -46,5 +45,22 @@ document.addEventListener('DOMContentLoaded', ()=> {
     for (var i = 0; i < eventBoards.length; i++) watchBoard(eventBoards[i], true);
     
     console.log("board observers", mutationObservers);
+}
 
-}, false);
+function disableBoardObservers() {
+    console.log('disabling observers');
+
+    for (var i = 0; i < mutationObservers.length; i++) {
+        mutationObservers[i].disconnect();
+        delete mutationObservers[i];
+    }
+    mutationObservers = [];
+}
+
+ipcRenderer.on('minimized', () => {
+    enableBoardObservers();
+});
+
+ipcRenderer.on('visible', () => {
+    disableBoardObservers();
+});

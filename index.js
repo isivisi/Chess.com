@@ -53,11 +53,13 @@ function createWindow () {
     win.hide();
     //win.webContents.setAudioMuted(true);
     hiddenWindow.webContents.send('navigated', "https://chess.com/")
+    win.webContents.send('minimized');
   });
 
   win.on('show', () => {
     //win.webContents.setAudioMuted(false);
     hiddenWindow.webContents.send('navigated', lastSendUrl)
+    win.webContents.send('visible');
   })
 
   // proper quit
