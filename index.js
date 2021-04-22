@@ -24,7 +24,7 @@ function createWindow () {
     icon: image
   })
 
-  //win.setMenu(null)
+  if (!process.argv.includes('--dev')) win.setMenu(null)
 
   win.loadURL('https://chess.com/')
 

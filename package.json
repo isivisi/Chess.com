@@ -6,7 +6,7 @@
   "scripts": {
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win",
-    "start": "electron ."
+    "start": "electron . --dev"
   },
   "author": "JairusSW",
   "license": "MIT",

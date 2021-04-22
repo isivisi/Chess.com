@@ -4,7 +4,7 @@ const { ipcRenderer } = require('electron');
 const domtoimage = require('dom-to-image');
 
 // force focus even when not for better notifications when minimized
-document.__defineGetter__("visibilityState",  function() { return "true";})
+document.__defineGetter__("visibilityState",  function() { return "visible" })
 
 console.log('Chess.com desktop script injected successfuly')
 
