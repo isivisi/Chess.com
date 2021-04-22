@@ -12,12 +12,19 @@ var mutationObservers = [];
 
 function watchBoard(toWatch, ignoreStyle=false) {
     var mutationObserver = new MutationObserver((mutation) => {
+
+        if (mutation[0].target.closest('.dragging')) return; // moving
+
+        // kill any instance of this as it wont go away when window isnt in focus
+        if (modals = document.getElementsByClassName('board-dialog-component')) for (var i = 0; i < modals.length; i++) modals[i].remove();
+
         var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
         if (!board) return;
-
+        
         domtoimage.toPng(board).then(function (dataUrl) {
             ipcRenderer.send('board-change', dataUrl);
         });
+
     });
     mutationObserver.observe(toWatch, {
         /*attributes: true,
