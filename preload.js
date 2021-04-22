@@ -4,7 +4,8 @@ const { ipcRenderer } = require('electron');
 const domtoimage = require('dom-to-image');
 
 // force focus even when not for better notifications when minimized
-document.__defineGetter__("visibilityState",  function() { return "visible" })
+//window.hasFocus = function() { return true }
+//document.__defineGetter__("visibilityState",  function() { return "visible" })
 
 console.log('Chess.com desktop script injected successfuly')
 
@@ -17,15 +18,15 @@ function watchBoard(toWatch, ignoreStyle=false) {
 
         if (mutation[0].target.closest('.dragging')) return; // moving
 
-        // kill any instance of this as it wont go away when window isnt in focus
-        if (modals = document.getElementsByClassName('board-dialog-component')) for (var i = 0; i < modals.length; i++) modals[i].remove();
-
         var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
         if (!board) return;
         
         domtoimage.toPng(board).then(function (dataUrl) {
             ipcRenderer.send('board-change', dataUrl);
         });
+
+        // kill any instance of this as it wont go away when window isnt in focus
+        if (modals = document.getElementsByClassName('board-dialog-component')) for (var i = 0; i < modals.length; i++) modals[i].remove();
 
     });
     mutationObserver.observe(toWatch, {

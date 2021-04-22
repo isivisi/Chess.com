@@ -17,7 +17,10 @@ function createWindow () {
     height: 900,
     webPreferences: {
       nodeIntegration: preferences.preferences.notifications.show_chessboard_on.length,
-      webSecurity: false,
+      backgroundThrottling: false, // better notifications
+      webSecurity: true,
+      enableRemoteModule: false,
+      contextIsolation: true, // so web contents cant access electrons api
       webgl: false,
       preload: preferences.preferences.notifications.show_chessboard_on.length ? path.join(__dirname, 'preload.js') : null,
     },
