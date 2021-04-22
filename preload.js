@@ -12,8 +12,6 @@ var mutationObservers = [];
 
 function watchBoard(toWatch, ignoreStyle=false) {
     var mutationObserver = new MutationObserver((mutation) => {
-        if (!ignoreStyle && mutation[0].target.getAttribute("style") != "") return; // moving
-        if (mutation[0].target.closest('.dragging')) return; // moving
         var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
         if (!board) return;
 
