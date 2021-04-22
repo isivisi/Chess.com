@@ -2,7 +2,6 @@
 
 const { ipcRenderer } = require('electron');
 
-const html2canvas = require('html2canvas');
 const domtoimage = require('dom-to-image');
 
 console.log('Chess.com desktop script injected successfuly')
