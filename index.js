@@ -148,6 +148,7 @@ const preferences = new ElectronPreferences({
     },
     'notifications': {
       'show_chessboard_on': [],
+      'show_chessboard_when': 'tray',
       'show_chessboard_time': 10,
       'show_chessboard_size': 300,
     }
@@ -169,7 +170,7 @@ const preferences = new ElectronPreferences({
                             {'label': "Don't start automatically", 'value': false},
                             {'label': 'Start automatically', 'value': true},
                           ],
-                          'help': 'What to publicly show you are doing on chess.com'
+                          'help': 'If the chess.com desktop application should automatically start when your computer starts up'
                       }
                   ]
                 }
@@ -194,7 +195,7 @@ const preferences = new ElectronPreferences({
                               {'label': 'Solving Puzzles', 'value': 'puzzles'},
                               {'label': 'Watching Lessons', 'value': 'lessons'},
                           ],
-                          'help': 'What to publicly show you are doing on chess.com'
+                          'help': 'What to publicly show on discord'
                       }
                   ]
               } 
@@ -208,7 +209,7 @@ const preferences = new ElectronPreferences({
           'groups': [
               {
                   'label': 'Notification Settings',
-                  'fields': [
+                      'fields': [
                       {
                           'label': "Chessboard notifications",
                           'key': 'show_chessboard_on',
@@ -219,6 +220,16 @@ const preferences = new ElectronPreferences({
                               {'label': 'When a move happens in an event', 'value': 'event'},
                           ],
                           'help': 'These notifications will show the current board state. To get this information we need to inject code into the webpage, use at your own risk'
+                      },
+                      {
+                        'label': "When to show",
+                        'key': 'show_chessboard_when',
+                        'type': 'radio',
+                        'options': [
+                            {'label': 'When minimized to tray', 'value': 'tray'},
+                            {'label': 'When out of focus in any way', 'value': 'blur'},
+                        ],
+                        'help': 'When to show the notification'
                       },
                       {
                         'label': "Notification time (seconds)",
@@ -286,9 +297,11 @@ let popupTimeout = null;
 ipcMain.on('board-change', (event, html) => {
 
   clearTimeout(popupTimeout)
-
-  if (!win.isMinimized()) {
-    return;
+  
+  if (preferences.preferences.notifications.show_chessboard_when == 'tray') {
+    if (!win.isMinimized()) return;
+  } else if (preferences.preferences.notifications.show_chessboard_when == 'blur') {
+    if (win.isFocused()) return;
   }
 
   if (!popup) {
@@ -328,7 +341,7 @@ ipcMain.on('board-change', (event, html) => {
   popup.webContents.send('board-update', html);
 
   popupTimeout = setTimeout(() => {
-    popup.hide();
+    if (popup) popup.hide();
   }, preferences.preferences.notifications.show_chessboard_time * 1000);
   
 });
