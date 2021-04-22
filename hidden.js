@@ -84,14 +84,14 @@ ipcRenderer.on('navigated', (event, url) => {
   // We can parse the url to determine the current users state for discord
   if (prefs.discord.status_on.includes('live') && url.pathname.includes("/live")) client.updatePresence({state: 'Watching Live Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
   
-  else if (prefs.discord.status_on.includes('playing')) {
+  if (prefs.discord.status_on.includes('playing')) {
     if      (url.pathname == "/play") client.updatePresence({state: 'Playing Chess', details: 'Playing Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == "/play/online") client.updatePresence({state: 'Playing Online Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == "/play/computer") {client.updatePresence({state: 'Playing AI Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})}
     else client.clearPresence()
   }
   
-  else if (prefs.discord.status_on.includes('puzzles')) {
+  if (prefs.discord.status_on.includes('puzzles')) {
     if      (url.pathname == "/puzzles/rated") client.updatePresence({state: 'Rated Puzzles', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == "/puzzles/rush") client.updatePresence({state: 'Puzzle Rush', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == "/puzzles/battle") client.updatePresence({state: 'Puzzle Battle', details: 'Solving Chess Puzzles', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true}) 
@@ -100,14 +100,13 @@ ipcRenderer.on('navigated', (event, url) => {
     else client.clearPresence()
   }
 
-  else if (prefs.discord.status_on.includes('lessons')) {
+  if (prefs.discord.status_on.includes('lessons')) {
     if      (url.pathname.includes("/lessons/")) client.updatePresence({state: 'Learning Chess', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == '/analysis') client.updatePresence({state: 'Analyzing Chess Match', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == '/vision') client.updatePresence({state: 'Playing Vision Minigame', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else if (url.pathname == '/explorer') client.updatePresence({state: 'Exploring Chess Positions', startTimestamp: new Date(), largeImageKey: 'logo', smallImageKey: 'logo1', instance: true})
     else client.clearPresence()
   }
-  else client.clearPresence()
 
 })
 
