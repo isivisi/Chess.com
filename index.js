@@ -142,7 +142,8 @@ const preferences = new ElectronPreferences({
         ]
     },
     'notifications': {
-      'show_chessboard_on': []
+      'show_chessboard_on': [],
+      'show_chessboard_time': 10,
     }
   },
   'sections':[
@@ -212,7 +213,15 @@ const preferences = new ElectronPreferences({
                               {'label': 'When a move happens in an event', 'value': 'event'},
                           ],
                           'help': 'These notifications will show the current board state. To get this information we need to inject code into the webpage, use at your own risk'
-                      }
+                      },
+                      {
+                        'label': "Notification time (seconds)",
+                        'key': 'show_chessboard_time',
+                        'type': 'slider',
+                        'min': 1,
+                        'max': 30,
+                        'help': 'How long a boardstate notifcation stays on the screen in seconds'
+                    }
                   ]
               } 
           ]
@@ -285,6 +294,7 @@ ipcMain.on('board-change', (event, html) => {
     })
     popup.loadFile('./boardNotification.html')
     popup.setAlwaysOnTop(true, "screen-saver", 1);
+    popup.setSkipTaskbar(true);
     //popup.setResizable(false)
   } else popup.showInactive();
 
@@ -301,7 +311,7 @@ ipcMain.on('board-change', (event, html) => {
 
   popupTimeout = setTimeout(() => {
     popup.hide();
-  }, 5000);
+  }, preferences.preferences.notifications.show_chessboard_time * 1000);
 
   popup.webContents.on('did-finish-load', ()=>{
     popup.webContents.executeJavaScript('document.body.style = "background-color:rgb(49, 46, 43)"');
