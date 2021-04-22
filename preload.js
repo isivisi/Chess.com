@@ -10,10 +10,6 @@ console.log('Chess.com desktop script injected successfuly')
 // Gather all chess boards in current view so we can determine someone has made a move
 var mutationObservers = [];
 
-var cssInline = null;
-var head = null;
-
-//boards.concat(Array.from(document.getElementsByTagName("chess-board"))); 
 
 function watchBoard(toWatch, ignoreStyle=false) {
     var mutationObserver = new MutationObserver((mutation) => {
