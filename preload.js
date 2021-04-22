@@ -4,9 +4,9 @@ const { ipcRenderer } = require('electron');
 const domtoimage = require('dom-to-image');
 
 // force focus even when not for better notifications when minimized
-window.hasFocus = function() { return true }
-window.__defineGetter__("hasFocus", function() { return true })
-document.__defineGetter__("visibilityState",  function() { return "visible" })
+//window.hasFocus = function() { return true }
+//window.__defineGetter__("hasFocus", function() { return true })
+//document.__defineGetter__("visibilityState",  function() { return "visible" })
 
 console.log('Chess.com desktop script injected successfuly')
 
@@ -16,8 +16,8 @@ var mutationObservers = [];
 
 function watchBoard(toWatch, ignoreStyle=false) {
     var mutationObserver = new MutationObserver((mutation) => {
-        window.__defineGetter__("hasFocus", function() { return true })
-        document.__defineGetter__("visibilityState",  function() { return "visible" })
+        //window.__defineGetter__("hasFocus", function() { return true })
+        //document.__defineGetter__("visibilityState",  function() { return "visible" })
 
         if (mutation[0].target.closest('.dragging')) return; // moving
 

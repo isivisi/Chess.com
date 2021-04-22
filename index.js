@@ -8,9 +8,13 @@ const schema = {
     type: 'string',
     format: 'url',
     default: 'https://chess.com'
+  },
+  windowSize: {
+    type: 'array',
+    default: [1200, 900]
   }
-};
-const store = new Store({schema});
+}
+const store = new Store({schema})
 
 const image = nativeImage.createFromPath(__dirname + '/icon.png');
 
@@ -21,10 +25,11 @@ let win = null;
 let lastSendUrl = "/";
 
 function createWindow () {
+  var lastSize = store.get('windowSize');
   win = new BrowserWindow({
     show: !process.argv.includes('--hidden'),
-    width: 1200,
-    height: 900,
+    width: lastSize[0],
+    height: lastSize[1],
     webPreferences: {
       nodeIntegration: preferences.preferences.notifications.show_chessboard_on.length,
       backgroundThrottling: false, // better notifications
@@ -32,6 +37,7 @@ function createWindow () {
       enableRemoteModule: false,
       contextIsolation: true, // so web contents cant access electrons api
       webgl: false,
+      autoplayPolicy: 'document-user-activation-required',
       preload: preferences.preferences.notifications.show_chessboard_on.length ? path.join(__dirname, 'preload.js') : null,
     },
     icon: image
@@ -42,24 +48,28 @@ function createWindow () {
   if (preferences.preferences.general.persistant_url) win.loadURL(store.get('lastUrl'));
   else win.loadURL('https://chess.com/')
 
+  win.on('resized', () => {
+    store.set('windowSize', win.getSize())
+  });
+
   // keep contents in same window
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
     win.loadURL(url);
     lastSendUrl = url;
-    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url);
+    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   });
 
   win.webContents.on('did-navigate-in-page', function (event, url) {
     lastSendUrl = url;
-    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url);
+    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   });
 
   win.webContents.on('did-navigate', (event, url, httpResponseCode, httpStatusCode) => {
     lastSendUrl = url;
-    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url);
+    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
 
   });
