@@ -15,18 +15,13 @@ var head = null;
 
 //boards.concat(Array.from(document.getElementsByTagName("chess-board"))); 
 
-function watchBoard(toWatch) {
+function watchBoard(toWatch, ignoreStyle=false) {
     var mutationObserver = new MutationObserver((mutation) => {
-        if (mutation[0].target.getAttribute("style") != "") return; // moving
+        if (!ignoreStyle && mutation[0].target.getAttribute("style") != "") return; // moving
         if (mutation[0].target.closest('.dragging')) return; // moving
-        var board = mutation[0].target.closest('chess-board') || mutation[0].target.closest('#board-layout-main');
+        var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
         if (!board) return;
-
-        /*html2canvas(board).then(canvas => {
-            console.log(canvas.toDataURL());
-            ipcRenderer.send('board-change', canvas.toDataURL());
-        });*/
-
+        
         domtoimage.toPng(board).then(function (dataUrl) {
             console.log(dataUrl);
             ipcRenderer.send('board-change', dataUrl);
@@ -49,10 +44,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
     var boards = document.getElementsByTagName("chess-board");
     for (var i = 0; i < boards.length; i++) watchBoard(boards[i])
 
-    if (document.getElementById('game-board')) watchBoard(document.getElementById('game-board'))
+    if (document.getElementById('game-board')) watchBoard(document.getElementById('game-board'), true)
 
     var eventBoards = document.getElementsByClassName('game-board-component');
-    for (var i = 0; i < eventBoards.length; i++) watchBoard(eventBoards[i]);
+    for (var i = 0; i < eventBoards.length; i++) watchBoard(eventBoards[i], true);
     
     console.log("board observers", mutationObservers);
 

@@ -51,12 +51,12 @@ function createWindow () {
   win.on('minimize',function(event){
     event.preventDefault();
     win.hide();
-    win.webContents.setAudioMuted(true);
+    //win.webContents.setAudioMuted(true);
     hiddenWindow.webContents.send('navigated', "https://chess.com/")
   });
 
   win.on('show', () => {
-    win.webContents.setAudioMuted(false);
+    //win.webContents.setAudioMuted(false);
     hiddenWindow.webContents.send('navigated', lastSendUrl)
   })
 
@@ -256,7 +256,10 @@ function setStartupState(open) {
 }
 
 let popup = null;
+let popupTimeout = null;
 ipcMain.on('board-change', (event, html) => {
+
+  clearTimeout(popupTimeout)
 
   if (!win.isMinimized()) {
     return;
@@ -268,12 +271,10 @@ ipcMain.on('board-change', (event, html) => {
     let height = display.bounds.height;
     popup = new BrowserWindow({
       frame: false,
-      //titleBarStyle: 'hidden',
-      transparent:true,
       show: true,
-      width: 450,
+      width: 600,
       height: 600,
-      x: width - 450,
+      x: width - 600,
       y: height - 600,
       webPreferences: {
         nodeIntegration: true,
@@ -297,8 +298,12 @@ ipcMain.on('board-change', (event, html) => {
 
   popup.loadURL(html);
 
+  popupTimeout = setTimeout(() => {
+    popup.hide();
+  }, 5000);
+
   popup.webContents.on('did-finish-load', ()=>{
-    popup.webContents.executeJavaScript('document.body.style = "border-radius: 25px; margin: 25px; overflow:hidden;"');
+    popup.webContents.executeJavaScript('document.body.style = "background-color:black"');
   });
   
 });
