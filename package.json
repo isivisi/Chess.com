@@ -25,6 +25,7 @@
     "discord-rich-presence": "0.0.8",
     "dom-to-image": "^2.6.0",
     "electron-preferences": "^2.2.0",
+    "electron-store": "^8.0.0",
     "path": "^0.12.7"
   }
 }

@@ -1,6 +1,16 @@
 const { app, BrowserWindow, nativeImage, Tray, Menu, ipcMain, screen } = require('electron')
 const path = require('path');
 const ElectronPreferences = require('electron-preferences');
+const Store = require('electron-store');
+
+const schema = {
+	lastUrl: {
+    type: 'string',
+    format: 'url',
+    default: 'https://chess.com'
+  }
+};
+const store = new Store({schema});
 
 const image = nativeImage.createFromPath(__dirname + '/icon.png');
 
@@ -29,23 +39,27 @@ function createWindow () {
 
   if (!process.argv.includes('--dev')) win.setMenu(null)
 
-  win.loadURL('https://chess.com/')
+  if (preferences.preferences.general.persistant_url) win.loadURL(store.get('lastUrl'));
+  else win.loadURL('https://chess.com/')
 
   // keep contents in same window
   win.webContents.on('new-window', function(e, url) {
     e.preventDefault();
     win.loadURL(url);
     lastSendUrl = url;
+    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url);
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   });
 
   win.webContents.on('did-navigate-in-page', function (event, url) {
     lastSendUrl = url;
+    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url);
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
   });
 
   win.webContents.on('did-navigate', (event, url, httpResponseCode, httpStatusCode) => {
     lastSendUrl = url;
+    if (preferences.preferences.general.persistant_url) store.set('lastUrl', url);
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
 
   });
@@ -134,6 +148,9 @@ function createTrayIcon() {
 const preferences = new ElectronPreferences({
   'dataStore': path.resolve(app.getPath('userData'), 'preferences.json'),
   'defaults': {
+    'general': {
+      'persistant_url': true,
+    },
     'startup': {
         'startup_with_os': false,
         'startup_hidden': true,
@@ -154,6 +171,29 @@ const preferences = new ElectronPreferences({
     }
   },
   'sections':[
+    {
+      'id': 'general',
+      'label': 'General Settings',
+      'form': {
+          'groups': [
+              {
+                  'label': 'General Settings',
+                  'fields': [
+                    {
+                        'label': "Persistant location",
+                        'key': 'persistant_url',
+                        'type': 'radio',
+                        'options': [
+                          {'label': "Open where I left off", 'value': true},
+                          {'label': 'Start at homepage', 'value': false},
+                        ],
+                        'help': 'Where to put you when you first open the application'
+                    }
+                ]
+              }
+          ]      
+      }
+    },
       {
         'id': 'startup',
         'label': 'Startup Settings',
