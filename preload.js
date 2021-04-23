@@ -12,8 +12,6 @@ setInterval(function() {
     // keep forcing visible so notifications are up to date
     window.hasFocus = function() { return true }
     window.visibilityState =function() { return "visible" }
-    //window.__defineGetter__("hasFocus", function() { return true })
-    //document.__defineGetter__("visibilityState",  function() { return "visible" })
 }, 250);
 
 

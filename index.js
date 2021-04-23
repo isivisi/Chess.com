@@ -81,6 +81,7 @@ function createWindow () {
   // minimize to tray
   win.on('minimize',function(event){
     event.preventDefault();
+
     win.hide();
     //win.webContents.setAudioMuted(true);
     hiddenWindow.webContents.send('navigated', "https://chess.com/")
