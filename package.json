@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win",
+    "dist": "electron-builder --win --x64",
+    "distlinux": "electron-builder --linux -x64",
+    "distmac": "electron-builder --mac",
     "start": "electron . --dev"
   },
   "author": "JairusSW",

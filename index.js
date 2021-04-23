@@ -92,6 +92,11 @@ function createWindow () {
     win.webContents.send('visible');
   })
 
+  win.on('focus', () => {
+    // clear any notification text
+    appIcon.setToolTip('Chess.com');
+  });
+
   // proper quit
   win.on('close',function(event){
     app.isQuiting = true;
@@ -157,6 +162,11 @@ function createTrayIcon() {
   });
 
 }
+
+ipcMain.on('notification', (title, options) => {
+  if (win.isFocused()) return;
+  appIcon.setToolTip(`•  ${options.name}`);
+});
 
 const preferences = new ElectronPreferences({
   'dataStore': path.resolve(app.getPath('userData'), 'preferences.json'),
