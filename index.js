@@ -45,8 +45,11 @@ function createWindow () {
 
   if (!process.argv.includes('--dev')) win.setMenu(null)
 
-  if (preferences.preferences.general.persistant_url) win.loadURL(store.get('lastUrl'));
-  else win.loadURL('https://chess.com/')
+  if (preferences.preferences.general.persistant_url) {
+    // check annoying edge case were you actually leave chess.com XD
+    if ((new URL(store.get('lastUrl'))).origin != 'https://chess.com') win.loadURL('https://chess.com')
+    else win.loadURL(store.get('lastUrl'))
+  } else win.loadURL('https://chess.com/')
 
   win.on('resized', () => {
     store.set('windowSize', win.getSize())
