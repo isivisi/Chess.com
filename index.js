@@ -31,14 +31,14 @@ function createWindow () {
     width: lastSize[0],
     height: lastSize[1],
     webPreferences: {
-      nodeIntegration: preferences.preferences.notifications.show_chessboard_on.length,
+      nodeIntegration: preferences.preferences.notifications.show_chessboard_on,
       backgroundThrottling: false, // better notifications
       webSecurity: true,
       enableRemoteModule: false,
       contextIsolation: true, // so web contents cant access electrons api
       webgl: false,
-      autoplayPolicy: 'document-user-activation-required',
-      preload: preferences.preferences.notifications.show_chessboard_on.length ? path.join(__dirname, 'preload.js') : null,
+      autoplayPolicy: 'user-gesture-required',
+      preload: preferences.preferences.notifications.show_chessboard_on ? path.join(__dirname, 'preload.js') : null,
     },
     icon: image
   })
@@ -278,11 +278,10 @@ const preferences = new ElectronPreferences({
                       {
                           'label': "Chessboard notifications",
                           'key': 'show_chessboard_on',
-                          'type': 'checkbox',
+                          'type': 'radio',
                           'options': [
-                              {'label': 'When a move happens in a live game', 'value': 'live'},
-                              {'label': 'When a move happens in an online game', 'value': 'online'},
-                              {'label': 'When a move happens in an event', 'value': 'event'},
+                              {'label': 'Show chessboard notifications', 'value': true},
+                              {'label': 'Dont show chessboard notifications', 'value': false},
                           ],
                           'help': 'These notifications will show the current board state. To get this information we need to inject code into the webpage, use at your own risk'
                       },
@@ -345,7 +344,6 @@ app.on('activate', () => {
 preferences.on('save', (preferences) => {
   setStartupState(preferences.startup.startup_type)
   hiddenWindow.webContents.send('preferences', preferences)
-
   if (popup) popup.close(); // reset popup size
 
 });

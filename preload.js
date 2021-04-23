@@ -14,7 +14,6 @@ setInterval(function() {
     window.visibilityState =function() { return "visible" }
 }, 250);
 
-
 function watchBoard(toWatch) {
 
     var mutationObserver = new MutationObserver((mutation) => {
