@@ -3,28 +3,30 @@
 const { ipcRenderer } = require('electron');
 const domtoimage = require('dom-to-image');
 
-// force focus even when not for better notifications when minimized
-//window.hasFocus = function() { return true }
-//window.__defineGetter__("hasFocus", function() { return true })
-//document.__defineGetter__("visibilityState",  function() { return "visible" })
-
 console.log('Chess.com desktop script injected successfuly')
 
 // Gather all chess boards in current view so we can determine someone has made a move
 var mutationObservers = [];
 
+setInterval(function() {
+    // keep forcing visible so notifications are up to date
+    window.hasFocus = function() { return true }
+    window.visibilityState =function() { return "visible" }
+    //window.__defineGetter__("hasFocus", function() { return true })
+    //document.__defineGetter__("visibilityState",  function() { return "visible" })
+}, 250);
+
 
 function watchBoard(toWatch) {
+
     var mutationObserver = new MutationObserver((mutation) => {
-        //window.__defineGetter__("hasFocus", function() { return true })
-        //document.__defineGetter__("visibilityState",  function() { return "visible" })
 
         if (mutation[0].target.closest('.dragging')) return; // moving
 
         var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
         if (!board) return;
         
-        domtoimage.toPng(board).then(function (dataUrl) {
+        domtoimage.toPng(board, { style: {left: '0', top: '0'}}).then(function (dataUrl) {
             ipcRenderer.send('board-change', dataUrl);
         });
 

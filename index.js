@@ -47,9 +47,10 @@ function createWindow () {
 
   if (preferences.preferences.general.persistant_url) {
     // check annoying edge case were you actually leave chess.com XD
-    if ((new URL(store.get('lastUrl'))).origin != 'https://chess.com') win.loadURL('https://chess.com')
+    console.log((new URL(store.get('lastUrl'))).origin)
+    if ((new URL(store.get('lastUrl'))).origin != 'https://www.chess.com') win.loadURL('https://www.chess.com')
     else win.loadURL(store.get('lastUrl'))
-  } else win.loadURL('https://chess.com/')
+  } else win.loadURL('https://www.chess.com/')
 
   win.on('resized', () => {
     store.set('windowSize', win.getSize())
