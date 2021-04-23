@@ -74,31 +74,3 @@ ipcRenderer.on('minimized', () => {
 ipcRenderer.on('visible', () => {
     disableBoardObservers();
 });
-
-// Capture notifications, abstracted from nativefier
-/*const realNotification = window.Notification;
-const notificationCapture = function (title, opt) {
-
-    // opts:
-    // body - string
-    // icon - url
-    // badge - url
-    // image - url
-    // actions: 
-    //  action
-    //  title
-    //  icon
-
-    ipcRenderer.on('notification', {title, opt});
-
-    const instance = new realNotification(title, opt);
-    instance.addEventListener('click', () => {
-        ipcRenderer.on('notification-clicked', {title, opt});
-    });
-};
-
-notificationCapture.requestPermission = realNotification.requestPermission.bind(realNotification);
-Object.defineProperty(notificationCapture, 'permission', {
-    get: () => realNotification.permission,
-});
-window.Notification = notificationCapture;*/
