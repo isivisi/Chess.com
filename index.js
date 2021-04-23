@@ -189,7 +189,7 @@ const preferences = new ElectronPreferences({
         ]
     },
     'notifications': {
-      'show_chessboard_on': [],
+      'show_chessboard_on': false,
       'show_chessboard_when': 'tray',
       'show_chessboard_time': 10,
       'show_chessboard_size': 300,
@@ -276,7 +276,7 @@ const preferences = new ElectronPreferences({
                   'label': 'Notification Settings',
                       'fields': [
                       {
-                          'label': "Chessboard notifications",
+                          'label': "Chessboard notifications (requires program restart to take effect)",
                           'key': 'show_chessboard_on',
                           'type': 'radio',
                           'options': [
