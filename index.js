@@ -58,19 +58,19 @@ function createWindow () {
     win.loadURL(url);
     lastSendUrl = url;
     if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
-    if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
+    if (hiddenWindow) hiddenWindow.webContents.send('navigated', url, win.getTitle())
   });
 
   win.webContents.on('did-navigate-in-page', function (event, url) {
     lastSendUrl = url;
     if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
-    if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
+    if (hiddenWindow) hiddenWindow.webContents.send('navigated', url, win.getTitle())
   });
 
   win.webContents.on('did-navigate', (event, url, httpResponseCode, httpStatusCode) => {
     lastSendUrl = url;
     if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
-    if (hiddenWindow) hiddenWindow.webContents.send('navigated', url)
+    if (hiddenWindow) hiddenWindow.webContents.send('navigated', url, win.getTitle())
 
   });
 
