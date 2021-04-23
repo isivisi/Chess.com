@@ -37,7 +37,6 @@ function createWindow () {
       enableRemoteModule: false,
       contextIsolation: true, // so web contents cant access electrons api
       webgl: false,
-      autoplayPolicy: 'user-gesture-required',
       preload: preferences.preferences.notifications.show_chessboard_on ? path.join(__dirname, 'preload.js') : null,
     },
     icon: image
