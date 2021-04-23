@@ -3,16 +3,13 @@
 const { ipcRenderer } = require('electron');
 const domtoimage = require('dom-to-image');
 
+document.__defineGetter__("visibilityState", () => "visible")
+document.__defineGetter__("hidden", () => false)
+
 console.log('Chess.com desktop script injected successfuly')
 
 // Gather all chess boards in current view so we can determine someone has made a move
 var mutationObservers = [];
-
-setInterval(function() {
-    // keep forcing visible so notifications are up to date
-    window.hasFocus = function() { return true }
-    window.visibilityState =function() { return "visible" }
-}, 250);
 
 function watchBoard(toWatch) {
 
