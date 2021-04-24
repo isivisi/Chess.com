@@ -10,6 +10,7 @@ console.log('Chess.com desktop script injected successfuly')
 
 // Gather all chess boards in current view so we can determine someone has made a move
 var mutationObservers = [];
+var watching = false;
 
 function watchBoard(toWatch) {
 
@@ -17,7 +18,10 @@ function watchBoard(toWatch) {
 
         if (mutation[0].target.closest('.dragging')) return; // moving
 
-        var board = mutation[0].target.closest('.layout-board-section') || mutation[0].target.closest('#board-layout-main') || mutation[0].target.closest('.game-board-component');
+        var board = mutation[0].target.closest('.layout-board-section') || 
+                    mutation[0].target.closest('#board-layout-main') || 
+                    mutation[0].target.closest('.game-board-component') || 
+                    mutation[0].target.closest('.main-tab-game-board-container');
         if (!board) return;
         
         domtoimage.toPng(board, { style: {left: '0', top: '0'}}).then(function (dataUrl) {
@@ -40,6 +44,7 @@ function watchBoard(toWatch) {
 }
 
 function enableBoardObservers() {
+    watching = true;
     console.log('observing board changes');
 
     var boards = document.getElementsByTagName("chess-board");
@@ -54,6 +59,7 @@ function enableBoardObservers() {
 }
 
 function disableBoardObservers() {
+    watching = false;
     console.log('disabling observers');
 
     for (var i = 0; i < mutationObservers.length; i++) {
@@ -69,4 +75,12 @@ ipcRenderer.on('minimized', () => {
 
 ipcRenderer.on('visible', () => {
     disableBoardObservers();
+});
+
+// regrab observers when in page url changes
+ipcRenderer.on('refresh-watchers', () => {
+    if (watching) {
+        disableBoardObservers();
+        enableBoardObservers();
+    }
 });

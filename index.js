@@ -68,6 +68,7 @@ function createWindow () {
     lastSendUrl = url;
     if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url, win.getTitle())
+    win.webContents.send('refresh-watchers');
   });
 
   win.webContents.on('did-navigate', (event, url, httpResponseCode, httpStatusCode) => {
@@ -80,7 +81,6 @@ function createWindow () {
   // minimize to tray
   win.on('minimize',function(event){
     event.preventDefault();
-
     win.hide();
     //win.webContents.setAudioMuted(true);
     hiddenWindow.webContents.send('navigated', "https://chess.com/")
