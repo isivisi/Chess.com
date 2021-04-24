@@ -24,6 +24,8 @@ let hiddenWindow = null;
 let win = null;
 let lastSendUrl = "/";
 
+app.commandLine.appendSwitch('disable-renderer-backgrounding')
+
 function createWindow () {
   var lastSize = store.get('windowSize');
   win = new BrowserWindow({
@@ -75,7 +77,7 @@ function createWindow () {
     lastSendUrl = url;
     if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url, win.getTitle())
-
+    win.webContents.setBackgroundThrottling(false)
   });
 
   // minimize to tray
@@ -85,6 +87,7 @@ function createWindow () {
     //win.webContents.setAudioMuted(true);
     hiddenWindow.webContents.send('navigated', "https://chess.com/")
     win.webContents.send('minimized');
+    win.webContents.setBackgroundThrottling(false)
   });
 
   win.on('show', () => {

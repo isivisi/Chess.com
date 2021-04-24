@@ -69,12 +69,15 @@ function disableBoardObservers() {
     mutationObservers = [];
 }
 
+var original_storage = JSON.parse(window.localStorage.getItem('live_storage'))
 ipcRenderer.on('minimized', () => {
     enableBoardObservers();
+    setAnimationType('none'); // this fixes the frame behind issue for the notifications :D
 });
 
 ipcRenderer.on('visible', () => {
     disableBoardObservers();
+    setAnimationType(original_storage.live_settings.animationtype);
 });
 
 // regrab observers when in page url changes
@@ -84,3 +87,10 @@ ipcRenderer.on('refresh-watchers', () => {
         enableBoardObservers();
     }
 });
+
+function setAnimationType(value) {
+    console.log('forcing animation type to ' + value)
+    var local = JSON.parse(window.localStorage.getItem('live_storage'))
+    local.live_settings.animationtype = value
+    window.localStorage.setItem('live_storage', JSON.stringify(local));
+}
