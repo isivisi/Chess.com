@@ -37,7 +37,7 @@ function createWindow () {
       backgroundThrottling: false, // better notifications
       webSecurity: true,
       enableRemoteModule: false,
-      contextIsolation: false, // so web contents cant access electrons api
+      contextIsolation: true, // so web contents cant access electrons api
       webgl: false,
       preload: preferences.preferences.notifications.show_chessboard_on ? path.join(__dirname, 'preload.js') : null,
     },
@@ -77,7 +77,6 @@ function createWindow () {
     lastSendUrl = url;
     if (preferences.preferences.general.persistant_url) store.set('lastUrl', url)
     if (hiddenWindow) hiddenWindow.webContents.send('navigated', url, win.getTitle())
-    win.webContents.setBackgroundThrottling(false)
   });
 
   // minimize to tray
@@ -87,7 +86,6 @@ function createWindow () {
     //win.webContents.setAudioMuted(true);
     hiddenWindow.webContents.send('navigated', "https://chess.com/")
     win.webContents.send('minimized');
-    win.webContents.setBackgroundThrottling(false)
   });
 
   win.on('show', () => {
