@@ -37,7 +37,7 @@ function createWindow () {
       backgroundThrottling: false, // better notifications
       webSecurity: true,
       enableRemoteModule: false,
-      contextIsolation: true, // so web contents cant access electrons api
+      contextIsolation: false, // so web contents cant access electrons api
       webgl: false,
       preload: preferences.preferences.notifications.show_chessboard_on ? path.join(__dirname, 'preload.js') : null,
     },
