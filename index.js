@@ -25,6 +25,7 @@ let win = null;
 let lastSendUrl = "/";
 
 app.commandLine.appendSwitch('disable-renderer-backgrounding')
+app.commandLine.appendSwitch('no-sandbox')
 
 function createWindow () {
   var lastSize = store.get('windowSize');
